@@ -12,9 +12,8 @@ class NetflixAPIService {
     static let shared = NetflixAPIService()
     
     // These values need to be extracted from an authenticated Netflix session
-    // See documentation for how to obtain these
     private var buildIdentifier = "mre" // Example value, update from browser
-    private var authURL = "https://www.netflix.com/nq/website/memberapi/v9c0e26cd"
+    private var authURL = "v9c0e26cd"
     
     // Netflix cookies - must be obtained from logged-in session
     var netflixId: String = "v%3D3%26ct%3DBgjHlOvcAxLxAoLMKkP7Lwg-qr7LaNvzxYd6PuqitsGfkmhMrOzSM9H5O7qCbnyxrLGj2BQ4LDbVInVzpSsn1NneGKjnach0RiYSeab-S_ms9rMK5_CduA_HH5y6UeEoQXuqzylXELmItHlIkoMjP0WsxvJq_6KTyOxSORh0SmBasSjFZXXGHjyP658xHgnGUJ-M7NL_8mCQ3QXmijB6QJ31mY8lR2E9r6ySP1qGg1q5O3cCFSzf9mvSJlp8KgVJVaFUYGgl5h7buPz45d4y1zu89LJE110y7NamS5T1mJmykRJ967cncNP2MaEP_dQh5l4ZiuGeUng4fT5B0p4kzqEsVBkA4gJLP5a1BaohT2AY7n4nQHcR7GIlYlzNoVvVuh1zJsyDehcK1nWA06MKRFl9i-brcq-M2wPWE4cmUx-j7nJGfU-jYvtzAUIJEygOrE9cxUuGxIvH3s3LqkTpv7rsZqPl-HRogRj2U0gWz2zKkCKQWF_XFNBVDRgGIg4KDBuBCjhhPld_KZQ3xw..%26pg%3DRSSQTUCYVVDINOFY5YFSP47U5Q%26ch%3DAQEAEAABABSVglGlUMdoFlYmDMdz2jzWCtZkfw0TFYA" // NetflixId cookie
@@ -47,8 +46,8 @@ class NetflixAPIService {
         """
 
         // NOTE: authURL token is required by Netflix and must be obtained from the logged-in WebView session.
-        // For now, we try to reuse the existing `authURL` property if it already contains the token; otherwise this will likely fail.
-        // You should plumb a fresh token from WebView into this service.
+        // For now, trying to reuse the existing `authURL` property if it already contains the token; otherwise this will likely fail.
+        // Plumb a fresh token from WebView into this service.
         let authToken = authURL // expected to be a token like c1.XXXXXXXX.... not a URL path.
 
         func encode(_ s: String) -> String {
@@ -62,7 +61,6 @@ class NetflixAPIService {
         request.setValue("en-GB,en;q=0.5", forHTTPHeaderField: "Accept-Language")
         request.setValue("https://www.netflix.com", forHTTPHeaderField: "Origin")
         request.setValue("https://www.netflix.com/browse", forHTTPHeaderField: "Referer")
-        // A realistic UA helps; consider capturing from WebView
         request.setValue("Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1", forHTTPHeaderField: "User-Agent")
 
         // Attach cookies if available
@@ -71,7 +69,7 @@ class NetflixAPIService {
             request.setValue(cookieString, forHTTPHeaderField: "Cookie")
         }
 
-        // Build x-www-form-urlencoded body with path and authURL token
+        // Building x-www-form-urlencoded body with path and authURL token
         let bodyString = "path=\(encode(pathArray))&authURL=\(encode(authToken))"
         request.httpBody = bodyString.data(using: .utf8)
 

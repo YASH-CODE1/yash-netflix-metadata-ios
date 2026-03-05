@@ -81,7 +81,7 @@ class MetadataViewModel: ObservableObject {
             metadata = nil
             
             do {
-                // For now, show an informative error
+                // For now, showing an informative error
                 errorMessage = """
                 Title search is available but requires additional API implementation.
                 
@@ -106,7 +106,7 @@ class MetadataViewModel: ObservableObject {
     func updateFromWebView(videoId: String, buildId: String, cookies: [String: String]) {
         self.videoId = videoId
         
-        // Configure API service with extracted values
+        // Configuring API service with extracted values
         if let netflixId = cookies["NetflixId"],
            let secureNetflixId = cookies["SecureNetflixId"] {
             apiService.configure(
@@ -116,7 +116,7 @@ class MetadataViewModel: ObservableObject {
             )
         }
         
-        // Automatically fetch metadata
+        // Automatically fetching metadata
         fetchMetadataById()
     }
     
